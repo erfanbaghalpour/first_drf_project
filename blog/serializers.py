@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Article
+from blog.models import Article
 
 
 class UserSerializer(serializers.Serializer):
@@ -18,10 +18,13 @@ class UserSerializer(serializers.Serializer):
 #         return Article.objects.create(**validated_data)
 
 class ArticleSerializer(serializers.ModelSerializer):
+    status = serializers.BooleanField(write_only=True)
+
     class Meta:
-        model = Article()
-        fields = "__all__"
+        model = Article
+        fields = ("__all__")
         # also we can filter them by using the codes in below :
         # fields = ("title", "text", ...)
         # and if we want to remove a field we can use this :
         # exclude = ("status", ...)
+        read_only_fields = ["id"]
