@@ -75,3 +75,20 @@ class AddArticleView(APIView):
             serializer.save()
             return Response({"response": "added"})
         return Response(serializer.errors)
+
+
+class ArticleUpdateView(APIView):
+    def put(self, request, pk):
+        instance = Article.objects.get(id=pk)
+        serializer = ArticleSerializer(instance=instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"response": "updated"})
+        return Response(serializer.errors)
+
+
+class ArticleDeleteView(APIView):
+    def delete(self, request, pk):
+        instance = Article.objects.get(id=pk)
+        instance.delete()
+        return Response({"response": "deleted"})
