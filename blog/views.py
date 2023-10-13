@@ -6,6 +6,7 @@ import requests
 from .serializers import UserSerializer, ArticleSerializer
 from django.contrib.auth.models import User
 from .models import Article
+from rest_framework import status
 
 URL = 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'
 
@@ -73,8 +74,8 @@ class AddArticleView(APIView):
         serializer = ArticleSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"response": "added"})
-        return Response(serializer.errors)
+            return Response({"response": "added"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ArticleUpdateView(APIView):
@@ -83,12 +84,12 @@ class ArticleUpdateView(APIView):
         serializer = ArticleSerializer(instance=instance, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"response": "updated"})
-        return Response(serializer.errors)
+            return Response({"response": "updated"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ArticleDeleteView(APIView):
     def delete(self, request, pk):
         instance = Article.objects.get(id=pk)
         instance.delete()
-        return Response({"response": "deleted"})
+        return Response({"response": "deleted"}, status=status.HTTP_200_OK)
