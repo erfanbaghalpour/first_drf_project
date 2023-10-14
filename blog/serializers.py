@@ -8,9 +8,14 @@ class UserSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=190)
 
 
+def check_title(attrs):
+    if attrs['title'] == "html":
+        raise serializers.ValidationError({"title": "title can not be html"})
+
+
 # class ArticleSerializer(serializers.Serializer):
 #     id = serializers.IntegerField(required=False)
-#     title = serializers.CharField()
+#     title = serializers.CharField(validators=[check_title])
 #     text = serializers.CharField()
 #     status = serializers.BooleanField(required=False)
 #
@@ -23,17 +28,21 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ("__all__")
+        validators = [
+            check_title
+        ]
         # also we can filter them by using the codes in below :
         # fields = ("title", "text", ...)
         # and if we want to remove a field we can use this :
         # exclude = ("status", ...)
+
         read_only_fields = ["id"]
 
     # def validate_title(self, value):
     #     if value == "html":
     #         raise serializers.ValidationError("You can choose html")
     #     return value
-    def validate(self, attrs):
-        if attrs['title'] == attrs['text']:
-            raise serializers.ValidationError("title and text can not be the same!")
-        return attrs
+    # def validate(self, attrs):
+    #     if attrs['title'] == attrs['text']:
+    #         raise serializers.ValidationError("title and text can not be the same!")
+    #     return attrs
