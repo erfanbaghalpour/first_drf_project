@@ -13,9 +13,15 @@ def check_title(attrs):
         raise serializers.ValidationError({"title": "title can not be html"})
 
 
+class CheckTitle:
+    def __call__(self, attrs):
+        if attrs["title"] == 'html':
+            raise serializers.ValidationError({"title": "title can not be html"})
+
+
 # class ArticleSerializer(serializers.Serializer):
 #     id = serializers.IntegerField(required=False)
-#     title = serializers.CharField(validators=[check_title])
+#     title = serializers.CharField(validators=[CheckTitle()])
 #     text = serializers.CharField()
 #     status = serializers.BooleanField(required=False)
 #
@@ -29,7 +35,7 @@ class ArticleSerializer(serializers.ModelSerializer):
         model = Article
         fields = ("__all__")
         validators = [
-            check_title
+            CheckTitle()
         ]
         # also we can filter them by using the codes in below :
         # fields = ("title", "text", ...)
