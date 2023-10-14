@@ -28,3 +28,12 @@ class ArticleSerializer(serializers.ModelSerializer):
         # and if we want to remove a field we can use this :
         # exclude = ("status", ...)
         read_only_fields = ["id"]
+
+    # def validate_title(self, value):
+    #     if value == "html":
+    #         raise serializers.ValidationError("You can choose html")
+    #     return value
+    def validate(self, attrs):
+        if attrs['title'] == attrs['text']:
+            raise serializers.ValidationError("title and text can not be the same!")
+        return attrs
