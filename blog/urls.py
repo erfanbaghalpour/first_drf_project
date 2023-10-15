@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from .views import HelloWorld
+from rest_framework.authtoken import views as token_views
 
 urlpatterns = [
     path('blog', views.hello_world),
@@ -12,4 +13,5 @@ urlpatterns = [
     path('articles/update/<int:pk>', views.ArticleUpdateView.as_view()),
     path('articles/delete/<int:pk>', views.ArticleDeleteView.as_view()),
     path('check', views.CheckToken.as_view()),
+    path('login/', token_views.obtain_auth_token),
 ]
