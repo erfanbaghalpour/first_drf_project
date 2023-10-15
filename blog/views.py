@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import requests
+from rest_framework.authentication import TokenAuthentication
 from .serializers import UserSerializer, ArticleSerializer
 from django.contrib.auth.models import User
 from .models import Article
@@ -93,3 +94,12 @@ class ArticleDeleteView(APIView):
         instance = Article.objects.get(id=pk)
         instance.delete()
         return Response({"response": "deleted"}, status=status.HTTP_200_OK)
+
+
+# authentication a user
+class CheckToken(APIView):
+    authentication_classes = [TokenAuthentication]
+
+    def get(self, request):
+        user = request.user
+        return Response({"user": user.username}, status=status.HTTP_200_OK)

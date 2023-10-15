@@ -11,4 +11,5 @@ urlpatterns = [
     path('articles/add', views.AddArticleView.as_view()),
     path('articles/update/<int:pk>', views.ArticleUpdateView.as_view()),
     path('articles/delete/<int:pk>', views.ArticleDeleteView.as_view()),
+    path('check', views.CheckToken.as_view()),
 ]
