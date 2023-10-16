@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from .models import Article
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from .permissions import BlocklistPermission
+from .permissions import BlocklistPermission, IsUserOrReadOnly
 
 URL = 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'
 
@@ -86,11 +86,14 @@ class AddArticleView(APIView):
 
 
 class ArticleUpdateView(APIView):
+    permission_classes = [IsAuthenticated, IsUserOrReadOnly]
+
     def put(self, request, pk):
         instance = Article.objects.get(id=pk)
-        serializer = ArticleSerializer(instance=instance, data=request.data, partial=True)
+        self.check_object_permissions(request, instance)
+        serializer = ArticleSerializer(data=request.data, partial=True)
         if serializer.is_valid():
-            serializer.save()
+            serializer.update(instance=instance, validated_data=serializer.validated_data)
             return Response({"response": "updated"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
