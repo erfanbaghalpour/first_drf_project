@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from .models import Article
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from .permissions import BlocklistPermission
 
 URL = 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'
 
@@ -72,7 +73,8 @@ class ArticleDetailView(APIView):
 
 
 class AddArticleView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, BlocklistPermission]
+
     def post(self, request):
         serializer = ArticleSerializer(data=request.data)
         if serializer.is_valid():
