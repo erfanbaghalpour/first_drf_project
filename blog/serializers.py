@@ -1,6 +1,8 @@
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.utils.timezone import now
+from persiantools.jdatetime import JalaliDate
 
 from blog.models import Article, Comment
 
@@ -58,12 +60,16 @@ class ArticleSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    days_ago = serializers.SerializerMethodField
+    days_ago = serializers.SerializerMethodField()
+    date = serializers.SerializerMethodField()
+
     class Meta:
         model = Comment
         fields = "__all__"
 
+    def get_days_ago(self, obj):
+        return (now().date() - obj.date).days
 
-
-
-
+    def get_date(self, obj):
+        date = JalaliDate(obj.date, locale="fa")
+        return date.strftime('%c')
