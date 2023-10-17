@@ -1,5 +1,8 @@
-from rest_framework import serializers
-from blog.models import Article
+from rest_framework import serializers, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from blog.models import Article, Comment
 
 
 class UserSerializer(serializers.Serializer):
@@ -52,3 +55,15 @@ class ArticleSerializer(serializers.ModelSerializer):
     #     if attrs['title'] == attrs['text']:
     #         raise serializers.ValidationError("title and text can not be the same!")
     #     return attrs
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    days_ago = serializers.SerializerMethodField
+    class Meta:
+        model = Comment
+        fields = "__all__"
+
+
+
+
+

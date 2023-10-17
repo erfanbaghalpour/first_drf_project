@@ -4,10 +4,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 import requests
 from rest_framework.authentication import TokenAuthentication
-from .serializers import UserSerializer, ArticleSerializer
+from .serializers import UserSerializer, ArticleSerializer, CommentSerializer
 from django.contrib.auth.models import User
-from .models import Article
-from rest_framework import status
+from .models import Article, Comment
+from rest_framework import status, serializers
 from rest_framework.permissions import IsAuthenticated
 from .permissions import BlocklistPermission, IsUserOrReadOnly
 
@@ -112,3 +112,10 @@ class CheckToken(APIView):
     def get(self, request):
         user = request.user
         return Response({"user": user.username}, status=status.HTTP_200_OK)
+
+
+class ArticleCommentsView(APIView):
+    def get(self, request, pk):
+        comments = Article.objects.get(id=pk).comments.all()
+        serializer = CommentSerializer(instance=comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
