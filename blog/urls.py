@@ -15,4 +15,5 @@ urlpatterns = [
     path('check', views.CheckToken.as_view()),
     path('login/', token_views.obtain_auth_token),
     path('article/comments/<int:pk>', views.ArticleCommentsView.as_view()),
+    path('users', views.UserDetailView.as_view()),
 ]

@@ -119,3 +119,10 @@ class ArticleCommentsView(APIView):
         comments = Article.objects.get(id=pk).comments.all()
         serializer = CommentSerializer(instance=comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserDetailView(APIView):
+    def get(self, request):
+        users = User.objects.all()
+        serializer = UserSerializer(instance=users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -7,10 +8,16 @@ from persiantools.jdatetime import JalaliDate
 from blog.models import Article, Comment
 
 
-class UserSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=70)
-    last_name = serializers.CharField(max_length=100)
-    email = serializers.EmailField(max_length=190)
+# class UserSerializer(serializers.Serializer):
+#     username = serializers.CharField(max_length=70)
+#     last_name = serializers.CharField(max_length=100)
+#     email = serializers.EmailField(max_length=190)
+class UserSerializer(serializers.ModelSerializer):
+    articles = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
+
+    class Meta:
+        model = User
+        fields = "__all__"
 
 
 def check_title(attrs):
@@ -52,6 +59,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class ArticleSerializer(serializers.ModelSerializer):
     status = serializers.BooleanField(write_only=True)
     comments = serializers.SerializerMethodField()
+    user = serializers.SlugRelatedField(read_only=True, slug_field="username")
 
     class Meta:
         model = Article
