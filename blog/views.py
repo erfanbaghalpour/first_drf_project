@@ -130,6 +130,8 @@ class UserDetailView(APIView):
 
 
 class ArticleViewSet(ViewSet):
+    permission_classes = [IsAuthenticated]
+
     def list(self, request):
         queryset = Article.objects.all()
         serializer = ArticleSerializer(instance=queryset, many=True)
@@ -139,3 +141,21 @@ class ArticleViewSet(ViewSet):
         instance = Article.objects.get(id=pk)
         serializer = ArticleSerializer(instance=instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request, pk=None):
+        serializer = ArticleSerializer(data=request.data)
+        if serializer.is_valid():
+            if request.user.is_authenticated:
+                serializer.validated_data['user'] = request.user
+            serializer.save()
+            return Response({"response": "added"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, pk=None):
+        instance = Article.objects.get(id=pk)
+        self.check_object_permissions(request, instance)
+        serializer = ArticleSerializer(data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.update(instance=instance, validated_data=serializer.validated_data)
+            return Response({"response": "updated"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
