@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from rest_framework.routers import DefaultRouter
 
 urlpatterns = [
     path('blog', views.hello_world),
@@ -23,3 +24,7 @@ urlpatterns = [
     path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
+
+router = DefaultRouter()
+router.register(r'articles/viewset', views.ArticleViewSet, basename='articles')
+urlpatterns += router.urls

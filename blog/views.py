@@ -10,6 +10,7 @@ from .models import Article, Comment
 from rest_framework import status, serializers
 from rest_framework.permissions import IsAuthenticated
 from .permissions import BlocklistPermission, IsUserOrReadOnly
+from rest_framework.viewsets import ViewSet
 
 URL = 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'
 
@@ -125,4 +126,16 @@ class UserDetailView(APIView):
     def get(self, request):
         users = User.objects.all()
         serializer = UserSerializer(instance=users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ArticleViewSet(ViewSet):
+    def list(self, request):
+        queryset = Article.objects.all()
+        serializer = ArticleSerializer(instance=queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk=None):
+        instance = Article.objects.get(id=pk)
+        serializer = ArticleSerializer(instance=instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
