@@ -11,6 +11,7 @@ from rest_framework import status, serializers
 from rest_framework.permissions import IsAuthenticated
 from .permissions import BlocklistPermission, IsUserOrReadOnly
 from rest_framework.viewsets import ViewSet, ModelViewSet
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 
 URL = 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'
 
@@ -62,7 +63,9 @@ class GetCryptoPrice(APIView):
 class ArticleListView(APIView):
     def get(self, request):
         queryset = Article.objects.all()
-        serializer = ArticleSerializer(instance=queryset, many=True, context={'request': request})
+        paginator = LimitOffsetPagination()
+        result = paginator.paginate_queryset(queryset=queryset, request=request)
+        serializer = ArticleSerializer(instance=result, many=True, context={'request': request})
         return Response(serializer.data)
 
 
