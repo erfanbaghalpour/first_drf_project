@@ -59,6 +59,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class ArticleSerializer(serializers.ModelSerializer):
     status = serializers.BooleanField(write_only=True)
     comments = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
     user = serializers.SlugRelatedField(read_only=True, slug_field="username")
 
     class Meta:
@@ -78,6 +79,12 @@ class ArticleSerializer(serializers.ModelSerializer):
         serializer = CommentSerializer(instance=obj.comments.all(), many=True)
         return serializer.data
 
+    def get_image(self, obj):
+        request = self.context.get("request")
+        if obj.image:
+            image_url = obj.image.url
+            return request.build_absolute_uri(image_url)
+        return None
 # def validate_title(self, value):
 #     if value == "html":
 #         raise serializers.ValidationError("You can choose html")

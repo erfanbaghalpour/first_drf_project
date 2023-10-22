@@ -13,6 +13,7 @@ class Article(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='articles', blank=True, null=True)
     title = models.CharField(max_length=50)
     text = models.TextField()
+    image = models.ImageField(upload_to='images', blank=True, null=True)
     status = models.BooleanField()
 
     def __str__(self):

@@ -62,7 +62,7 @@ class GetCryptoPrice(APIView):
 class ArticleListView(APIView):
     def get(self, request):
         queryset = Article.objects.all()
-        serializer = ArticleSerializer(instance=queryset, many=True)
+        serializer = ArticleSerializer(instance=queryset, many=True, context={'request': request})
         return Response(serializer.data)
 
 
@@ -162,6 +162,9 @@ class UserDetailView(APIView):
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ArticleViewSet(ModelViewSet):
-    queryset = Article.objects.all()
-    serializer_class = ArticleSerializer
+# Model View Set
+# class ArticleViewSet(ModelViewSet):
+#     queryset = Article.objects.all()
+#     serializer_class = ArticleSerializer
+
+
