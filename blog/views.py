@@ -10,7 +10,7 @@ from .models import Article, Comment
 from rest_framework import status, serializers
 from rest_framework.permissions import IsAuthenticated
 from .permissions import BlocklistPermission, IsUserOrReadOnly
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ViewSet, ModelViewSet
 
 URL = 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'
 
@@ -128,34 +128,40 @@ class UserDetailView(APIView):
         serializer = UserSerializer(instance=users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+# View set
 
-class ArticleViewSet(ViewSet):
-    permission_classes = [IsAuthenticated]
+# class ArticleViewSet(ViewSet):
+#     permission_classes = [IsAuthenticated]
+#
+#     def list(self, request):
+#         queryset = Article.objects.all()
+#         serializer = ArticleSerializer(instance=queryset, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#
+#     def retrieve(self, request, pk=None):
+#         instance = Article.objects.get(id=pk)
+#         serializer = ArticleSerializer(instance=instance)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#
+#     def create(self, request, pk=None):
+#         serializer = ArticleSerializer(data=request.data)
+#         if serializer.is_valid():
+#             if request.user.is_authenticated:
+#                 serializer.validated_data['user'] = request.user
+#             serializer.save()
+#             return Response({"response": "added"}, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#
+#     def update(self, request, pk=None):
+#         instance = Article.objects.get(id=pk)
+#         self.check_object_permissions(request, instance)
+#         serializer = ArticleSerializer(data=request.data, partial=True)
+#         if serializer.is_valid():
+#             serializer.update(instance=instance, validated_data=serializer.validated_data)
+#             return Response({"response": "updated"}, status=status.HTTP_200_OK)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def list(self, request):
-        queryset = Article.objects.all()
-        serializer = ArticleSerializer(instance=queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def retrieve(self, request, pk=None):
-        instance = Article.objects.get(id=pk)
-        serializer = ArticleSerializer(instance=instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def create(self, request, pk=None):
-        serializer = ArticleSerializer(data=request.data)
-        if serializer.is_valid():
-            if request.user.is_authenticated:
-                serializer.validated_data['user'] = request.user
-            serializer.save()
-            return Response({"response": "added"}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def update(self, request, pk=None):
-        instance = Article.objects.get(id=pk)
-        self.check_object_permissions(request, instance)
-        serializer = ArticleSerializer(data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.update(instance=instance, validated_data=serializer.validated_data)
-            return Response({"response": "updated"}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class ArticleViewSet(ModelViewSet):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
