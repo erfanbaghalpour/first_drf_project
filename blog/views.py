@@ -163,8 +163,8 @@ class UserDetailView(APIView):
 
 
 # Model View Set
-# class ArticleViewSet(ModelViewSet):
-#     queryset = Article.objects.all()
-#     serializer_class = ArticleSerializer
+class ArticleViewSet(ModelViewSet):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
 
 

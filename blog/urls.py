@@ -25,6 +25,6 @@ urlpatterns = [
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
-# router = DefaultRouter()
-# router.register(r'articles/viewset', views.ArticleViewSet, basename='articles')
-# urlpatterns += router.urls
+router = DefaultRouter()
+router.register(r'articles/viewset', views.ArticleViewSet, basename='articles')
+urlpatterns += router.urls
